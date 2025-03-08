@@ -9,14 +9,14 @@ SIZE = 50
 # Функция для сброса игры
 def reset_game():
     global x, y, apple, dirs, length, snake, dx, dy, score, fps
-    x, y = SIZE, SIZE  # Начальная позиция
+    x, y = SIZE, SIZE
     apple = randrange(0, RES, SIZE), randrange(0, RES, SIZE)
     dirs = {'W': True, 'S': True, 'A': True, 'D': True}
     length = 1
     snake = [(x, y)]
-    dx, dy = 1, 0  # Начальное движение вправо
+    dx, dy = 1, 0
     score = 0
-    fps = 5  # Уменьшено с 10 до 5
+    fps = 5
 
 # Начальные параметры змейки и яблока
 x, y = SIZE, SIZE
@@ -26,7 +26,7 @@ length = 1
 snake = [(x, y)]
 dx, dy = 1, 0
 score = 0
-fps = 5  # Уменьшено с 10 до 5
+fps = 5
 
 # Инициализация Pygame
 pygame.init()
@@ -87,15 +87,25 @@ while running:
         snake.append((x, y))
         snake = snake[-length:]
 
+        # Телепортация при выходе за границы
+        if x < 0:
+            x = RES - SIZE
+        elif x > RES - SIZE:
+            x = 0
+        if y < 0:
+            y = RES - SIZE
+        elif y > RES - SIZE:
+            y = 0
+
         # Поедание яблока
         if snake[-1] == apple:
             apple = randrange(0, RES, SIZE), randrange(0, RES, SIZE)
             length += 1
             score += 1
-            fps += 0.5  # Уменьшен прирост скорости с 1 до 0.5
+            fps += 0.5
 
-        # Проверка на столкновение с границами или собой
-        if x < 0 or x > RES - SIZE or y < 0 or y > RES - SIZE or len(snake) != len(set(snake)):
+        # Проверка на столкновение с собой (змейка "откусывает" хвост)
+        if len(snake) != len(set(snake)):
             game_over = True
 
         # Обновление экрана
